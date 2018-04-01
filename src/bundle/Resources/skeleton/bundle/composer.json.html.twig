@@ -1,0 +1,26 @@
+{
+  "name": "{{ vendor_name_lower }}/ez-{{ bundle_short_lower }}-bundle",
+  "license": "GPL-2.0-only",
+  "type": "ezplatform-bundle",
+  "description": "eZ Platform bundle",
+  "autoload": {
+    "psr-4": {
+      "{{ namespace_slash }}Bundle\\": "src/bundle/",
+      "{{ namespace_slash }}\\": "src/lib/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": { "{{ namespace_slash }}Bundle\\Tests\\": "src/bundle/Tests" }
+  },
+  "require": {
+    "php": ">=7.1",
+    "ezsystems/ezpublish-kernel": "^7.0"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "~2.7.1",
+    "phpunit/phpunit": "^6.4"
+  },
+  "scripts": {
+    "fix-cs": "@php ./vendor/bin/php-cs-fixer fix -v --show-progress=estimating"
+  }
+}
