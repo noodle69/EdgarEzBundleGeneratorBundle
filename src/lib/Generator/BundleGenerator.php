@@ -91,7 +91,7 @@ class BundleGenerator extends Generator
         $this->renderFile('bundle/docs/INSTALL.md.html.twig', $dir . '/docs/INSTALL.md', $parameters);
         $this->renderFile('bundle/docs/USAGE.md.html.twig', $dir . '/docs/USAGE.md', $parameters);
         $this->renderFile('bundle/src/bundle/Bundle.php.html.twig', $dir . '/src/bundle/' . $bundle . '.php', $parameters);
-        $this->renderFile('bundle/src/bundle/DependencyInjection/Extension.php.html.twig', $dir . '/src/bundle/DependencyInjection/' . $bundle . 'Extension.php', $parameters);
+        $this->renderFile('bundle/src/bundle/DependencyInjection/Extension.php.html.twig', $dir . '/src/bundle/DependencyInjection/' . $basename . 'Extension.php', $parameters);
 
         self::mkdir($dir . '/src/lib/');
         self::mkdir($dir . '/src/bundle/Resources/config');
