@@ -60,3 +60,8 @@ After all, you should dump composer autoload by executing this command :
 ```
 composer dumpautoload
 ```
+
+### Options
+
+* with-security : Generate PolicyProvider and policies.yml
+* platform-ui : Generate controller/routing for an eZ Platform Admin UI bundle

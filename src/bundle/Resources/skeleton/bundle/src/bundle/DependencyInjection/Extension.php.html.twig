@@ -21,7 +21,7 @@ class {{ bundle_basename }}Extension extends Extension
             new FileLocator(__DIR__ . '/../Resources/config')
         );
 
+        $loader->load('services.yml');
     }
-
 {% endblock class_body %}
 }

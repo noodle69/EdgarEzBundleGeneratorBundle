@@ -1,0 +1,35 @@
+<?php
+
+namespace {{ namespace }}Bundle\DependencyInjection\Security\PolicyProvider;
+
+{% block use_statements %}
+use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Security\PolicyProvider\YamlPolicyProvider;
+{% endblock use_statements %}
+
+{% block class_definition %}
+class {{ bundle_short }}PolicyProvider extends YamlPolicyProvider
+{% endblock class_definition %}
+{
+{% block class_body %}
+    /** @var string $path bundle path */
+    protected $path;
+
+    /**
+     * UIAuditPolicyProvider constructor.
+     *
+     * @param string $path
+     */
+    public function __construct(string $path)
+    {
+        $this->path = $path;
+    }
+
+    /**
+    * @return array
+    */
+    public function getFiles()
+    {
+        return [$this->path . '/Resources/config/policies.yml'];
+    }
+{% endblock class_body %}
+}

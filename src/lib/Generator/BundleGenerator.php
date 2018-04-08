@@ -30,8 +30,14 @@ class BundleGenerator extends Generator
      * @param string $bundle
      * @param string $dir
      */
-    public function generate(string $namespace, string $bundle, string $dir, string $vendor)
-    {
+    public function generate(
+        string $namespace,
+        string $bundle,
+        string $dir,
+        string $vendor,
+        bool $withSecurity = false,
+        bool $platformUI = false
+    ) {
         $dir .= '/' . strtr($namespace, '\\', '/');
         if (file_exists($dir)) {
             if (!is_dir($dir)) {
@@ -75,7 +81,10 @@ class BundleGenerator extends Generator
             'vendor_name' => $vendor,
             'bundle_short' => substr($namespaceArray[1], 2, -6),
             'bundle_short_lower' => strtolower(substr($namespaceArray[1], 2, -6)),
-            'vendor_name_lower' => strtolower($vendor)
+            'vendor_name_lower' => strtolower($vendor),
+            'with_security' => $withSecurity,
+            'platform_ui' => $platformUI,
+            'basename' => $basename,
         ];
 
         $this->setSkeletonDirs([
@@ -92,9 +101,17 @@ class BundleGenerator extends Generator
         $this->renderFile('bundle/docs/USAGE.md.html.twig', $dir . '/docs/USAGE.md', $parameters);
         $this->renderFile('bundle/src/bundle/Bundle.php.html.twig', $dir . '/src/bundle/' . $bundle . '.php', $parameters);
         $this->renderFile('bundle/src/bundle/DependencyInjection/Extension.php.html.twig', $dir . '/src/bundle/DependencyInjection/' . $basename . 'Extension.php', $parameters);
+        $this->renderFile('bundle/src/bundle/Resources/config/services.yml.html.twig', $dir . '/src/bundle/Resources/config/services.yml', $parameters);
+        $this->renderFile('bundle/src/bundle/Controller/Controller.php.html.twig', $dir . '/src/bundle/Controller/' . $parameters['bundle_short'] . 'Controller.php', $parameters);
+        $this->renderFile('bundle/src/bundle/Resources/config/controllers.yml.html.twig', $dir . '/src/bundle/Resources/config/controllers.yml', $parameters);
+        $this->renderFile('bundle/src/bundle/Resources/config/routing.yml.html.twig', $dir . '/src/bundle/Resources/config/routing.yml', $parameters);
+        $this->renderFile('bundle/src/bundle/Resources/views/index.html.twig', $dir . '/src/bundle/Resources/views/index.html.twig', $parameters);
+
+        if ($withSecurity) {
+            $this->renderFile('bundle/src/bundle/DependencyInjection/Security/PolicyProvider/PolicyProvider.php.html.twig', $dir . '/src/bundle/DependencyInjection/Security/PolicyProvider/' . $parameters['bundle_short'] . 'PolicyProvider.php', $parameters);
+            $this->renderFile('bundle/src/bundle/Resources/config/policies.yml.html.twig', $dir . '/src/bundle/Resources/config/policies.yml', $parameters);
+        }
 
         self::mkdir($dir . '/src/lib/');
-        self::mkdir($dir . '/src/bundle/Resources/config');
-        self::mkdir($dir . '/src/bundle/Resources/views');
     }
 }

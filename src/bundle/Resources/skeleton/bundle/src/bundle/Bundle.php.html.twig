@@ -3,6 +3,10 @@
 namespace {{ namespace }}Bundle;
 
 {% block use_statements %}
+{% if with_security %}
+use {{ namespace }}Bundle\DependencyInjection\Security\PolicyProvider\{{ bundle_short }}PolicyProvider;
+use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\EzPublishCoreExtension;
+{% endif %}
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 {% endblock use_statements %}
@@ -14,6 +18,14 @@ class {{ bundle }} extends Bundle
 {% block class_body %}
     public function build(ContainerBuilder $container)
     {
+        {% if with_security %}
+
+        /** @var EzPublishCoreExtension $eZExtension */
+        $eZExtension = $container->getExtension('ezpublish');
+        $eZExtension->addPolicyProvider(new {{ bundle_short }}PolicyProvider($this->getPath()));
+
+        {% endif %}
+
     }
 {% endblock class_body %}
 }

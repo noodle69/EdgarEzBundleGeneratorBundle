@@ -26,3 +26,16 @@ public function registerBundles()
     );
 }
 ```
+
+## Add routing
+
+Add to your global configuration app/config/routing.yml
+
+```yaml
+{{ vendor_name_lower }}.{{ bundle_short_lower }}:
+    resource: '@{{ bundle }}/Resources/config/routing.yml'
+{% if platform_ui %}
+    defaults:
+        siteaccess_group_whitelist: 'admin_group'
+{% endif %}
+```

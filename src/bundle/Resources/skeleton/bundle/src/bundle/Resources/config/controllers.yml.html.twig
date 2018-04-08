@@ -1,0 +1,15 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    {{ namespace }}Bundle\Controller\:
+        resource: "../../Controller/*"
+        public: true
+        tags: ['controller.service_arguments']
+        calls:
+            - [setContainer, ["@service_container"]]
+{% if platform_ui %}
+            - [performAccessCheck, []]
+{% endif %}

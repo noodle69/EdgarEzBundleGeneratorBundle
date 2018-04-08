@@ -25,6 +25,8 @@ class GenerateBundleCommand extends GeneratorCommand
         $this
             ->setDefinition([
                 new InputOption('namespace', '', InputOption::VALUE_REQUIRED, 'The namespace of the bundle to create'),
+                new InputOption('with-security', '', InputOption::VALUE_OPTIONAL, 'Generate Security code'),
+                new InputOption('platform-ui', '', InputOption::VALUE_OPTIONAL, 'Is it a bundle for eZ Platform Admin UI'),
                 new InputOption('dir', '', InputOption::VALUE_REQUIRED, 'The directory where to create the bundle'),
                 new InputOption('bundle-name', '', InputOption::VALUE_REQUIRED, 'The optional bundle name'),
             ])
@@ -42,7 +44,7 @@ problem.
 If you want to disable any user interaction, use <comment>--no-interaction</comment> but don't forget to pass 
 all needed options:
 
-<info>php bin/console edgarez:generate:bundle --namespace=Acme/EzFooBundle --dir=src --no-interaction</info>
+<info>php bin/console edgarez:generate:bundle --namespace=Acme/EzFooBundle --with-security --platform-ui --dir=src --no-interaction</info>
 
 Note that the bundle namespace must end with "Bundle" and next to vendor name, bundle name should start with "Ez".
 EOT
@@ -88,6 +90,8 @@ EOT
 
         $bundle = Validators::validateBundleName($bundle);
         $dir = self::validateTargetDir($input->getOption('dir'));
+        $withSecurity = $input->getOption('with-security') ?? false;
+        $platformUI = $input->getOption('platform-ui') ?? false;
 
         $questionHelper->writeSection($output, 'eZ Platform Bundle structure generation');
 
@@ -97,7 +101,7 @@ EOT
 
         /** @var BundleGenerator $generator */
         $generator = $this->getGenerator();
-        $generator->generate($namespace, $bundle, $dir, $vendor);
+        $generator->generate($namespace, $bundle, $dir, $vendor, $withSecurity, $platformUI);
 
         $output->writeln('Generating the eZ Platform Bundle structure code: <info>OK</info>');
 
@@ -222,6 +226,8 @@ EOT
         $namespace = $this->getNamespace($input, $output, $questionHelper);
         $bundle = $this->getBundle($input, $output, $questionHelper, $namespace);
         $dir = $this->getDir($input, $output, $questionHelper, $bundle, $namespace);
+        $this->getWithSecurity($input, $output, $questionHelper);
+        $this->getPlatformUI($input, $output, $questionHelper);
 
         // summary
         $output->writeln([
@@ -408,6 +414,38 @@ EOT
             $dir = $questionHelper->ask($input, $output, $question);
             $input->setOption('dir', $dir);
         }
+    }
+
+    private function getWithSecurity(
+        InputInterface $input,
+        OutputInterface $output,
+        QuestionHelper $questionHelper
+    ) {
+        $output->writeln([
+            '',
+            'Generate Security code',
+            '',
+        ]);
+
+        $question = new Question($questionHelper->getQuestion('Do you want to generate security code', 'no', '?'), false);
+        $withSecurity = $questionHelper->ask($input, $output, $question) == 'yes' ? true : false;
+        $input->setOption('with-security', $withSecurity);
+    }
+
+    private function getPlatformUI(
+        InputInterface $input,
+        OutputInterface $output,
+        QuestionHelper $questionHelper
+    ) {
+        $output->writeln([
+            '',
+            'Is it a bundle for eZ Platform  Admin UI ?',
+            '',
+        ]);
+
+        $question = new Question($questionHelper->getQuestion('Generate code for eZ Platform Admin UI', 'no', '?'), false);
+        $platformUI = $questionHelper->ask($input, $output, $question) == 'yes' ? true : false;
+        $input->setOption('platform-ui', $platformUI);
     }
 
     /**

@@ -1,0 +1,6 @@
+{{ vendor_name_lower }}.{{ bundle_short_lower }}.index:
+    path: /
+    methods: [ "GET" ]
+    defaults:
+        _controller: '{{ bundle }}:{{ bundle_short }}:index'
+
